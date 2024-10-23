@@ -17,7 +17,6 @@
     <div class="movies-grid">
       <MoviesCard
           v-for="movie in paginatedMovies"
-          v-if="movie "
           :key="movie.id"
           :movie="movie"
       />
@@ -37,17 +36,31 @@ import axios from 'axios';
 import { onMounted, ref, computed } from 'vue';
 import MoviesCard from '@/components/MovieCard.vue';
 import NavBar from '@/components/NavBar.vue';
+import { useRouter } from 'vue-router'; // Importer useRouter
 
+const router = useRouter(); // Initialiser le router
 const movies = ref([]);  // Initialise un tableau vide pour stocker les films
-const searchQuery = ref(''); // Store the search query
-const currentPage = ref(1); // Current page for pagination
-const itemsPerPage = 6; // Number of items per page
+const searchQuery = ref(''); // Stocke la requête de recherche
+const currentPage = ref(1); // Page actuelle pour la pagination
+const itemsPerPage = 6; // Nombre d'éléments par page
 
 onMounted(async () => {
   try {
-    const res = await axios.get('http://localhost:8319/api/movies');
+    const token = localStorage.getItem('token');
+    if (!token) {
+      // Rediriger l'utilisateur vers la page de connexion
+      router.push('/'); // Utiliser router ici
+      return;
+    }
+    const res = await axios.get('http://localhost:8319/api/movies', {
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      }
+    });
     console.log(res);
-    movies.value = res.data.member || [];  // Stocke les films dans le tableau movies
+    // Vérifiez si les données existent avant de les affecter
+    movies.value = res.data || [];  // Stocke les films dans le tableau movies
     console.log(movies.value);
   } catch (error) {
     console.error('Erreur lors de la récupération des films:', error);
@@ -87,7 +100,7 @@ const previousPage = () => {
 
 // Method to filter movies when searching
 const filterMovies = () => {
-  currentPage.value = 1; // Reset to first page when searching
+  currentPage.value = 1; // Réinitialiser à la première page lors de la recherche
 };
 </script>
 

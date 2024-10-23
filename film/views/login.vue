@@ -1,18 +1,21 @@
 <template>
-  <div class="login-container">
-    <h1>Connexion</h1>
-    <form @submit.prevent="handleLogin">
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" v-model="email" required />
-      </div>
-      <div class="form-group">
-        <label for="password">Mot de passe</label>
-        <input type="password" v-model="password" required />
-      </div>
-      <button type="submit">Se connecter</button>
-    </form>
-    <div v-if="error" class="error">{{ error }}</div>
+  <div>
+    <NavBar />
+    <div class="login-container">
+      <h1>Connexion</h1>
+      <form @submit.prevent="handleLogin">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" v-model="email" placeholder="Entrez votre email" required />
+        </div>
+        <div class="form-group">
+          <label for="password">Mot de passe</label>
+          <input type="password" v-model="password" placeholder="Entrez votre mot de passe" required />
+        </div>
+        <button type="submit" class="btn-primary">Se connecter</button>
+      </form>
+      <div v-if="error" class="error">{{ error }}</div>
+    </div>
   </div>
 </template>
 
@@ -20,6 +23,7 @@
 import { ref } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import NavBar from '@/components/NavBar.vue'; // Assuming NavBar is in components
 
 const email = ref('');
 const password = ref('');
@@ -27,20 +31,19 @@ const error = ref('');
 const router = useRouter();
 
 const handleLogin = async () => {
-  error.value = ''; // Réinitialiser le message d'erreur
+  error.value = ''; // Reset error message
   try {
     const response = await axios.post('http://localhost:8319/api/auth', {
       email: email.value,
       password: password.value,
     });
 
-    // Supposons que le token se trouve dans response.data.token
     const token = response.data.token;
 
-    // Stocker le token dans le localStorage
+    // Store token
     localStorage.setItem('token', token);
 
-    // Rediriger vers la page d'accueil ou la route souhaitée
+    // Redirect to homepage
     router.push('/');
   } catch (err) {
     error.value = 'Email ou mot de passe invalide.';
@@ -50,21 +53,73 @@ const handleLogin = async () => {
 </script>
 
 <style scoped>
+/* Layout and positioning */
 .login-container {
   max-width: 400px;
-  margin: auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #f9f9f9;
+  margin: 100px auto;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: white;
 }
 
+/* Form elements */
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1em;
+  transition: border-color 0.3s ease;
+}
+
+input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Button styles */
+/* Button styles */
+button {
+  display: block;
+  padding: 10px;
+  font-size: 1.2em;
+  color: white;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 0 auto; /* Centers the button */
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+
+/* Error message */
 .error {
   color: red;
-  margin-top: 10px;
+  margin-top: 15px;
+  text-align: center;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .login-container {
+    margin: 50px 20px;
+    padding: 20px;
+  }
 }
 </style>
