@@ -10,7 +10,7 @@
         <h2 class="section-title">Latest Movies</h2>
         <div class="movies-list">
           <MovieCard
-              v-for="movie in latestMovies"
+              v-for="movie in displayedMovies"
               :key="movie.id"
               :movie="movie"
               @click="goToMovieDetails(movie.id)"
@@ -23,7 +23,7 @@
         <h2 class="section-title">Latest Actors</h2>
         <div class="actors-list">
           <ActorCard
-              v-for="actor in latestActors"
+              v-for="actor in displayedActors"
               :key="actor.id"
               :actor="actor"
               @click="goToActorDetails(actor.id)"
@@ -35,8 +35,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios'; // Import your custom axios instance
+import { ref, onMounted, computed } from 'vue';
+import axios from 'axios';
 import MovieCard from '@/components/MovieCard.vue';
 import ActorCard from '@/components/ActorCard.vue';
 import NavBar from '@/components/NavBar.vue';
@@ -55,11 +55,10 @@ const fetchLatestMovies = async () => {
     }
     const response = await axios.get('http://localhost:8319/api/movies', {
       headers: {
-        // eslint-disable-next-line no-undef
-        accept:'application/json',
+        accept: 'application/json',
         Authorization: `Bearer ${token}`,
       }
-    })
+    });
     latestMovies.value = response.data;
   } catch (error) {
     console.error('Error fetching movies:', error);
@@ -75,10 +74,9 @@ const fetchLatestActors = async () => {
       this.$router.push('/');
       return;
     }
-    const response = await axios.get('http://localhost:8319/api/actors',{
+    const response = await axios.get('http://localhost:8319/api/actors', {
       headers: {
-        // eslint-disable-next-line no-undef
-        accept:'application/json',
+        accept: 'application/json',
         Authorization: `Bearer ${token}`,
       }
     });
@@ -87,6 +85,16 @@ const fetchLatestActors = async () => {
     console.error('Error fetching actors:', error);
   }
 };
+
+// Computed property to limit the number of displayed movies
+const displayedMovies = computed(() => {
+  return latestMovies.value.slice(0, 6); // Affiche seulement les 9 premiers films
+});
+
+// Computed property to limit the number of displayed actors
+const displayedActors = computed(() => {
+  return latestActors.value.slice(0, 6); // Affiche seulement les 9 premiers acteurs
+});
 
 // Navigate to movie details page
 const goToMovieDetails = (id) => {
@@ -129,14 +137,15 @@ onMounted(() => {
 }
 
 /* Movies and Actors Sections */
-.movies-section, .actors-section {
+.movies-section,
+.actors-section {
   margin-bottom: 40px;
 }
 
 .movies-list,
 .actors-list {
   display: grid; /* Use grid layout for responsive design */
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Responsive columns */
+  grid-template-columns: repeat(3, 1fr); /* 3 columns */
   gap: 20px; /* Space between cards */
 }
 
@@ -156,12 +165,24 @@ onMounted(() => {
 
 /* Responsive styles */
 @media (max-width: 768px) {
+  .movies-list,
+  .actors-list {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on medium screens */
+  }
+
   .title {
     font-size: 2em; /* Slightly smaller title on smaller screens */
   }
 
   .section-title {
     font-size: 1.5em; /* Smaller section title on smaller screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .movies-list,
+  .actors-list {
+    grid-template-columns: 1fr; /* 1 column on small screens */
   }
 }
 </style>
