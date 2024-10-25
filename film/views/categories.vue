@@ -70,7 +70,7 @@ const previousPage = () => {
 </script>
 
 <template>
-  <NavBar />
+
 
   <!-- Barre de recherche -->
   <div class="search-container">

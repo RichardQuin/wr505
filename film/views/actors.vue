@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Intégration de la barre de navigation -->
-    <NavBar />
+
 
     <!-- Search Bar -->
     <div class="search-container">

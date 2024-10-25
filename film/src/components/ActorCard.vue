@@ -1,19 +1,13 @@
 <template>
-  <div class="actor-card" @click="$emit('click')">
+  <div class="actor-card" @click="goToActorDetails">
+    <img :src="actorImage" alt="Actor Image" class="actor-photo" />
     <h3>{{ actor.lastname + ' ' + actor.firstname }}</h3>
-    <p>{{ actorAge }} years old</p>
-    <p><strong>Nationality:</strong> {{ actor.nationality }}</p>
-    <p><strong>Gender:</strong> {{ actor.gender }}</p>
-    <p><strong>Awards:</strong> {{ actor.awards }}</p>
-    <p><strong>Bio:</strong> {{ truncatedBio }}</p>
-    <p><strong>Movies:</strong></p>
-    <ul>
-      <li v-for="movie in actor.movies" :key="movie">{{ movie }}</li>
-    </ul>
   </div>
 </template>
 
 <script>
+import defaultImage from '../assets/image/sacha.png'; // Image par défaut
+
 export default {
   name: 'ActorCard',
   props: {
@@ -23,18 +17,15 @@ export default {
     },
   },
   computed: {
-    actorAge() {
-      const birthDate = new Date(this.actor.dob);
-      const ageDiff = Date.now() - birthDate.getTime();
-      const ageDate = new Date(ageDiff);
-      return Math.abs(ageDate.getUTCFullYear() - 1970); // Calculates age
+    actorImage() {
+      // Utilise l'image de l'acteur s'il y en a une, sinon l'image par défaut
+      return this.actor.profileImage || defaultImage;
     },
-    truncatedBio() {
-      // Vérifie si la bio dépasse 200 caractères
-      if (this.actor.bio.length > 200) {
-        return this.actor.bio.slice(0, 200) + '...'; // Ajoute "..." si tronquée
-      }
-      return this.actor.bio; // Retourne la bio complète si elle ne dépasse pas 200 caractères
+  },
+  methods: {
+    goToActorDetails() {
+      // Redirige vers la page des détails de l'acteur
+      this.$router.push(`/actor/${this.actor.id}`);
     },
   },
 };
@@ -47,8 +38,16 @@ export default {
   border-radius: 5px;
   cursor: pointer;
   transition: box-shadow 0.3s;
+  text-align: center;
 }
 .actor-card:hover {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.actor-photo {
+  width: 100px;
+  height: auto;
+  border-radius: 50%;
+  margin-bottom: 10px;
 }
 </style>

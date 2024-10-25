@@ -1,6 +1,5 @@
 <template>
   <div>
-    <NavBar />
 
     <div class="home-page">
       <h1 class="title">Welcome to the Movie Database</h1>

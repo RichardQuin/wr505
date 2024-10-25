@@ -64,8 +64,23 @@ const router = createRouter({
             name:'register',
             component: ()=>import('../views/register.vue'),
 
-        }
+        },
 
+        {
+            path:'/editmovie/:id',
+            name:'editmovie',
+            component: ()=>import('../views/EditMovie.vue'),
+        },
+        {
+            path:'/addmovie',
+            name:'addmovie',
+            component: ()=>import('../views/addMovie.vue'),
+        },
+        {
+            path:'/editcategory/:id',
+            name:'editcategory',
+            component: ()=>import('../views/),
+        },
     ]
 })
 

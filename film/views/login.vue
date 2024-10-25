@@ -1,6 +1,5 @@
 <template>
   <div>
-    <NavBar />
     <div class="login-container">
       <h1>Connexion</h1>
       <form @submit.prevent="handleLogin">

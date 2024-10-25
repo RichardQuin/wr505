@@ -1,7 +1,11 @@
 <template>
   <div>
-    <!-- Intégration de la barre de navigation -->
-    <NavBar />
+
+
+    <!-- Bouton Ajouter un film -->
+    <div class="add-movie-container">
+      <button @click="addMovie" class="add-movie-button">Ajouter un film</button>
+    </div>
 
     <!-- Search Bar -->
     <div class="search-container">
@@ -102,6 +106,11 @@ const previousPage = () => {
 const filterMovies = () => {
   currentPage.value = 1; // Réinitialiser à la première page lors de la recherche
 };
+
+// Redirige vers la page d'ajout de film
+const addMovie = () => {
+  router.push('/addmovie'); // Remplace '/addmovie' par le chemin de ta page d'ajout de film
+};
 </script>
 
 <style scoped>
@@ -165,5 +174,25 @@ const filterMovies = () => {
 
 .pagination-controls button:disabled {
   background-color: #ccc; /* Style pour les boutons désactivés */
+}
+
+/* Style pour le bouton Ajouter un film */
+.add-movie-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.add-movie-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #28a745; /* Couleur verte pour le bouton */
+  color: white;
+  cursor: pointer;
+}
+
+.add-movie-button:hover {
+  background-color: #218838; /* Couleur au survol */
 }
 </style>
