@@ -2,6 +2,10 @@
   <div>
     <!-- Intégration de la barre de navigation -->
 
+    <!-- Bouton Ajouter un acteur -->
+    <div class="add-actor-container">
+      <button @click="addActor" class="btn-add-actor">Ajouter un acteur</button>
+    </div>
 
     <!-- Search Bar -->
     <div class="search-container">
@@ -37,7 +41,9 @@ import axios from 'axios';
 import { onMounted, ref, computed } from 'vue';
 import ActorCard from "@/components/ActorCard.vue";
 import NavBar from "@/components/NavBar.vue";
+import { useRouter } from 'vue-router';
 
+const router = useRouter(); // Récupérer l'instance de router
 const actors = ref([]);  // Initialise un tableau vide pour stocker les acteurs
 const searchQuery = ref(''); // Store the search query
 const currentPage = ref(1); // Current page for pagination
@@ -48,13 +54,12 @@ onMounted(async () => {
     const token = localStorage.getItem('token');
     if (!token) {
       //--- rediriger l'utilisateur vers la page de connexion
-      this.$router.push('/');
+      router.push('/'); // Utiliser router pour rediriger
       return;
     }
     const res = await axios.get('http://localhost:8319/api/actors', {
       headers: {
-        // eslint-disable-next-line no-undef
-        accept:'application/json',
+        accept: 'application/json',
         Authorization: `Bearer ${token}`,
       }
     });
@@ -101,6 +106,11 @@ const previousPage = () => {
 const filterActors = () => {
   currentPage.value = 1; // Reset to first page when searching
 };
+
+// Function to add a new actor
+const addActor = () => {
+  router.push('/addactor'); // Redirige vers la page d'ajout d'acteur
+};
 </script>
 
 <style scoped>
@@ -131,6 +141,26 @@ const filterActors = () => {
   grid-template-columns: repeat(3, 1fr); /* Grille de 3 colonnes */
   gap: 20px; /* Espace entre les éléments */
   padding: 20px;
+}
+
+/* Style pour le bouton Ajouter un acteur */
+.add-actor-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.btn-add-actor {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #28a745; /* Couleur verte pour le bouton */
+  color: white;
+  cursor: pointer;
+}
+
+.btn-add-actor:hover {
+  background-color: #218838; /* Couleur plus sombre au survol */
 }
 
 /* Styles pour la pagination */

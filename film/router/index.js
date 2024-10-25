@@ -79,7 +79,17 @@ const router = createRouter({
         {
             path:'/editcategory/:id',
             name:'editcategory',
-            component: ()=>import('../views/),
+            component: ()=>import('../views/EditCategory.vue'),
+        },
+        {
+            path:'/addcategory/',
+            name:'addcategory',
+            component: ()=>import('../views/addCategory.vue'),
+        },
+        {
+            path:'/addactor/',
+            name:'addactor',
+            component: ()=>import('../views/addActor.vue'),
         },
     ]
 })

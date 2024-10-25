@@ -1,9 +1,11 @@
 <script setup>
 import axios from 'axios';
 import { onMounted, ref, computed } from 'vue';
-import NavBar from "@/components/NavBar.vue"; // Importez la NavBar ici
+import { useRouter } from 'vue-router';
+import NavBar from "@/components/NavBar.vue";
 import CategoryCard from "@/components/CategoryCard.vue";
 
+const router = useRouter();
 const categoris = ref([]); // Initialise un tableau vide
 const searchQuery = ref(''); // Requête de recherche
 const currentPage = ref(1); // Page actuelle pour la pagination
@@ -13,8 +15,8 @@ onMounted(async () => {
   try {
     const token = localStorage.getItem('token');
     if (!token) {
-      //--- rediriger l'utilisateur vers la page de connexion
-      this.$router.push('/');
+      // Rediriger l'utilisateur vers la page de connexion
+      router.push('/');
       return;
     }
 
@@ -67,10 +69,18 @@ const previousPage = () => {
     currentPage.value--;
   }
 };
+
+// Redirige vers la page d'ajout de catégorie
+const addCategory = () => {
+  router.push('/addcategory');
+};
 </script>
 
 <template>
-
+  <!-- Bouton Ajouter une catégorie -->
+  <div class="add-category-container">
+    <button @click="addCategory">Ajouter une Catégorie</button>
+  </div>
 
   <!-- Barre de recherche -->
   <div class="search-container">
@@ -81,12 +91,13 @@ const previousPage = () => {
     />
   </div>
 
+  <!-- Liste des catégories paginée -->
   <category-card
       v-for="category in paginatedCategories"
       v-if="paginatedCategories.length"
       :key="category.id"
-      :categoris="category">
-  </category-card>
+      :categoris="category"
+  />
 
   <!-- Contrôles de pagination -->
   <div class="pagination-controls">
@@ -103,6 +114,25 @@ const previousPage = () => {
   margin-bottom: 20px;
 }
 
+.add-category-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.add-category-container button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: #28a745;
+  color: white;
+  cursor: pointer;
+}
+
+.add-category-container button:hover {
+  background-color: #218838;
+}
+
 .search-container {
   display: flex;
   justify-content: center;
@@ -113,7 +143,7 @@ const previousPage = () => {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  width: 300px; /* Largeur fixe pour le champ de recherche */
+  width: 300px;
 }
 
 /* Styles pour les contrôles de pagination */
@@ -134,6 +164,6 @@ const previousPage = () => {
 }
 
 .pagination-controls button:disabled {
-  background-color: #ccc; /* Style pour les boutons désactivés */
+  background-color: #ccc;
 }
 </style>

@@ -14,6 +14,9 @@
         <button type="submit" class="btn-primary">Se connecter</button>
       </form>
       <div v-if="error" class="error">{{ error }}</div>
+
+      <!-- Register button -->
+      <button @click="navigateToRegister" class="btn-secondary">Créer un compte</button>
     </div>
   </div>
 </template>
@@ -22,7 +25,6 @@
 import { ref } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
-import NavBar from '@/components/NavBar.vue'; // Assuming NavBar is in components
 
 const email = ref('');
 const password = ref('');
@@ -48,6 +50,11 @@ const handleLogin = async () => {
     error.value = 'Email ou mot de passe invalide.';
     console.error(err);
   }
+};
+
+// Navigate to the register page
+const navigateToRegister = () => {
+  router.push('/register');
 };
 </script>
 
@@ -88,24 +95,33 @@ input:focus {
 }
 
 /* Button styles */
-/* Button styles */
 button {
   display: block;
   padding: 10px;
   font-size: 1.2em;
   color: white;
-  background-color: #007bff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  margin: 0 auto; /* Centers the button */
+  margin: 15px auto; /* Centers the button */
 }
 
-button:hover {
+.btn-primary {
+  background-color: #007bff;
+}
+
+.btn-primary:hover {
   background-color: #0056b3;
 }
 
+.btn-secondary {
+  background-color: #6c757d;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
 
 /* Error message */
 .error {
