@@ -22,7 +22,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 
@@ -32,7 +32,7 @@ const error = ref('');
 const router = useRouter();
 
 const handleLogin = async () => {
-  error.value = ''; // Reset error message
+  error.value = ''; // Réinitialiser le message d'erreur
   try {
     const response = await axios.post('http://localhost:8319/api/auth', {
       email: email.value,
@@ -41,10 +41,10 @@ const handleLogin = async () => {
 
     const token = response.data.token;
 
-    // Store token
+    // Stocker le token
     localStorage.setItem('token', token);
 
-    // Redirect to homepage
+    // Rediriger vers la page d'accueil
     router.push('/');
   } catch (err) {
     error.value = 'Email ou mot de passe invalide.';
@@ -52,10 +52,19 @@ const handleLogin = async () => {
   }
 };
 
-// Navigate to the register page
+// Naviguer vers la page d'inscription
 const navigateToRegister = () => {
   router.push('/register');
 };
+
+// Vérifiez si l'utilisateur est déjà connecté
+onMounted(() => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    // Rediriger vers la page d'accueil si déjà connecté
+    router.push('/');
+  }
+});
 </script>
 
 <style scoped>
@@ -66,7 +75,7 @@ const navigateToRegister = () => {
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  background-color: white;
+  background-color: #ffffff; /* Fond blanc */
 }
 
 /* Form elements */
@@ -90,7 +99,7 @@ input {
 }
 
 input:focus {
-  border-color: #007bff;
+  border-color: #007bff; /* Couleur de la bordure au focus */
   outline: none;
 }
 
@@ -104,23 +113,23 @@ button {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  margin: 15px auto; /* Centers the button */
+  margin: 15px auto; /* Centre le bouton */
 }
 
 .btn-primary {
-  background-color: #007bff;
+  background-color: #007bff; /* Couleur principale */
 }
 
 .btn-primary:hover {
-  background-color: #0056b3;
+  background-color: #0056b3; /* Couleur au survol */
 }
 
 .btn-secondary {
-  background-color: #6c757d;
+  background-color: #6c757d; /* Couleur secondaire */
 }
 
 .btn-secondary:hover {
-  background-color: #5a6268;
+  background-color: #5a6268; /* Couleur au survol */
 }
 
 /* Error message */

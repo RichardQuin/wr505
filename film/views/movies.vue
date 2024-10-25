@@ -1,18 +1,11 @@
 <template>
   <div>
-
-
-    <!-- Bouton Ajouter un film -->
-    <div class="add-movie-container">
-      <button @click="addMovie" class="add-movie-button">Ajouter un film</button>
-    </div>
-
     <!-- Search Bar -->
     <div class="search-container">
       <input
           type="text"
           v-model="searchQuery"
-          placeholder="Search for a movie..."
+          placeholder="Rechercher un film..."
           @input="filterMovies"
       />
     </div>
@@ -28,9 +21,9 @@
 
     <!-- Pagination Controls -->
     <div class="pagination-controls">
-      <button @click="previousPage" :disabled="currentPage === 1">Previous</button>
-      <span>Page {{ currentPage }} of {{ totalPages }}</span>
-      <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
+      <button @click="previousPage" :disabled="currentPage === 1">Précédent</button>
+      <span>Page {{ currentPage }} de {{ totalPages }}</span>
+      <button @click="nextPage" :disabled="currentPage === totalPages">Suivant</button>
     </div>
   </div>
 </template>
@@ -39,8 +32,7 @@
 import axios from 'axios';
 import { onMounted, ref, computed } from 'vue';
 import MoviesCard from '@/components/MovieCard.vue';
-import NavBar from '@/components/NavBar.vue';
-import { useRouter } from 'vue-router'; // Importer useRouter
+import { useRouter } from 'vue-router';
 
 const router = useRouter(); // Initialiser le router
 const movies = ref([]);  // Initialise un tableau vide pour stocker les films
@@ -62,10 +54,8 @@ onMounted(async () => {
         Authorization: `Bearer ${token}`,
       }
     });
-    console.log(res);
     // Vérifiez si les données existent avant de les affecter
     movies.value = res.data || [];  // Stocke les films dans le tableau movies
-    console.log(movies.value);
   } catch (error) {
     console.error('Erreur lors de la récupération des films:', error);
   }
@@ -105,11 +95,6 @@ const previousPage = () => {
 // Method to filter movies when searching
 const filterMovies = () => {
   currentPage.value = 1; // Réinitialiser à la première page lors de la recherche
-};
-
-// Redirige vers la page d'ajout de film
-const addMovie = () => {
-  router.push('/addmovie'); // Remplace '/addmovie' par le chemin de ta page d'ajout de film
 };
 </script>
 
@@ -174,25 +159,5 @@ const addMovie = () => {
 
 .pagination-controls button:disabled {
   background-color: #ccc; /* Style pour les boutons désactivés */
-}
-
-/* Style pour le bouton Ajouter un film */
-.add-movie-container {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
-}
-
-.add-movie-button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  background-color: #28a745; /* Couleur verte pour le bouton */
-  color: white;
-  cursor: pointer;
-}
-
-.add-movie-button:hover {
-  background-color: #218838; /* Couleur au survol */
 }
 </style>

@@ -45,12 +45,6 @@ const router = createRouter({
 
         },
 
-        {
-            path:'/category/:id',
-            name:'category',
-            component: ()=>import('../views/category.vue'),
-
-        },
 
         {
             path:'/categories',
@@ -90,6 +84,11 @@ const router = createRouter({
             path:'/addactor/',
             name:'addactor',
             component: ()=>import('../views/addActor.vue'),
+        },
+        {
+            path:'/editactor/:id',
+            name:'editactor',
+            component: ()=>import('../views/EditActor.vue'),
         },
     ]
 })

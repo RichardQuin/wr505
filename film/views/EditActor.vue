@@ -25,9 +25,9 @@
     <div class="form-group">
       <label for="gender">Genre:</label>
       <select v-model="actorForm.gender" id="gender" required>
-        <option value="male">Homme</option>  <!-- Mise à jour ici -->
-        <option value="female">Femme</option> <!-- Mise à jour ici -->
-        <option value="other">Autre</option> <!-- Mise à jour ici -->
+        <option value="male">Homme</option>
+        <option value="female">Femme</option>
+        <option value="other">Autre</option>
       </select>
     </div>
 
@@ -57,7 +57,7 @@ const actorForm = ref({
   lastname: '',
   dob: '',
   nationality: '',
-  gender: 'male', // Valeur par défaut mise à jour ici
+  gender: 'male',
   awards: 0,
   bio: ''
 });
@@ -88,12 +88,12 @@ onMounted(async () => {
       lastname: actor.lastname,
       dob: actor.dob,
       nationality: actor.nationality,
-      gender: actor.gender, // Assurez-vous que cela correspond à 'male', 'female' ou 'other'
+      gender: actor.gender,
       awards: actor.awards,
       bio: actor.bio
     };
   } catch (error) {
-    console.error('Erreur lors de la récupération des détails de l\'acteur:', error);
+    console.error("Erreur lors de la récupération des détails de l'acteur:", error);
   }
 });
 
@@ -108,9 +108,9 @@ const updateActor = async () => {
       },
     });
     alert('Acteur modifié avec succès.');
-    router.push(`/actors/${route.params.id}`); // Rediriger vers la page de l'acteur
+    router.push(`/actors/${route.params.id}`);
   } catch (error) {
-    console.error('Erreur lors de la mise à jour de l\'acteur:', error);
+    console.error("Erreur lors de la mise à jour de l'acteur:", error);
     alert("Une erreur s'est produite lors de la mise à jour de l'acteur.");
   }
 };

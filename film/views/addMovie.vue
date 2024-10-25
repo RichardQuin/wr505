@@ -62,7 +62,7 @@ const addMovie = async () => {
   const token = localStorage.getItem('token');
 
   try {
-    const response = await axios.post('http://localhost:8319/api/movies', {
+    await axios.post('http://localhost:8319/api/movies', {
       ...movieForm.value,
       create_at: formattedCreateAt.value, // Utilisez le format approprié pour envoyer
     }, {

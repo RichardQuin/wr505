@@ -9,10 +9,7 @@
       <p><strong>Nationalité:</strong> {{ actor.nationality }}</p>
       <p><strong>Genre:</strong> {{ actor.gender }}</p>
       <p><strong>Récompenses:</strong> {{ actor.awards }}</p>
-
-      <p><strong>Films:</strong>
-        <span v-for="m in movies" :key="m.id"> {{ m.title + " " }} </span>
-      </p>
+      <p><strong>Films:</strong> <span v-for="m in movies" :key="m.id">{{ m.title }} </span></p>
     </div>
 
     <div class="actor-actions">
@@ -26,95 +23,81 @@
 import { useRoute } from "vue-router";
 import axios from 'axios';
 import { onMounted, ref, computed } from "vue";
+import router from "../router/index.js";
 import defaultImage from '../src/assets/image/sacha.png';
-import router from "../router/index.js"; // Image par défaut pour l'acteur
 
 const route = useRoute();
-let actor = ref(null);
-const movies = ref([]); // Stocker les films de l'acteur
+const actor = ref(null);
+const movies = ref([]);
 
-// Image de l'acteur ou image par défaut
-const actorImage = computed(() => {
-  return actor.value?.profileImage || defaultImage;
-});
+// Image de l'acteur avec fallback
+const actorImage = computed(() => actor.value?.profileImage || defaultImage);
 
-// Formater la date de naissance
+// Formatage de la date de naissance
 const formattedBirthDate = computed(() => {
-  if (actor.value && actor.value.dob) {
-    const date = new Date(actor.value.dob);
-    return date.toLocaleDateString();
+  if (actor.value?.dob) {
+    return new Date(actor.value.dob).toLocaleDateString();
   }
   return '';
 });
 
-// Charger les films associés à l'acteur
-const loadMovies = async () => {
+// Charger les détails de l'acteur
+const loadActorDetails = async () => {
   try {
-    const token = localStorage.getItem('token');
-    const promises = actor.value.movies.map(async (movie) => {
-      const response = await axios.get(`http://localhost:8319/api/movies/${movie.substring(12)}`, {
-        headers: {
-          accept: 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return response.data;
+    const response = await axios.get(`http://localhost:8319/api/actors/${route.params.id}`, {
+      headers: getAuthHeaders(),
     });
-
-    movies.value = await Promise.all(promises);
-    console.log('Movies:', movies.value);
+    actor.value = response.data;
+    loadMovies();
   } catch (error) {
-    console.error('Erreur lors de la récupération des films:', error);
+    console.error("Erreur lors de la récupération des détails de l'acteur:", error);
   }
 };
 
-// Charger les détails de l'acteur et les films associés
-onMounted(() => {
-  const token = localStorage.getItem('token');
-  axios.get(`http://localhost:8319/api/actors/${route.params.id}`, {
-    headers: {
-      accept: 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  })
-      .then((res) => {
-        console.log(res.data);
-        actor.value = res.data;
-        loadMovies(); // Charger les films après avoir récupéré l'acteur
-      })
-      .catch(error => {
-        console.error('Erreur lors de la récupération des détails de l\'acteur:', error);
-      });
-});
-
-// Fonction pour modifier l'acteur
-const editActor = () => {
-  console.log("ID de l'acteur à modifier :", actor.value.id); // Log de l'ID
-  router.push(`/editactor/${actor.value.id}`); // Redirige vers la page de modification
+// Charger les films associés à l'acteur
+const loadMovies = async () => {
+  try {
+    const promises = actor.value.movies.map((movieUrl) =>
+        axios.get(`http://localhost:8319/api/movies/${getMovieId(movieUrl)}`, {
+          headers: getAuthHeaders(),
+        }).then(res => res.data)
+    );
+    movies.value = await Promise.all(promises);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des films:", error);
+  }
 };
 
-// Fonction pour supprimer l'acteur
+// Récupère les en-têtes d'authentification
+const getAuthHeaders = () => ({
+  accept: 'application/json',
+  Authorization: `Bearer ${localStorage.getItem('token')}`,
+});
+
+// Extraire l'ID du film de l'URL
+const getMovieId = (movieUrl) => movieUrl.split('/').pop();
+
+// Navigation vers la page de modification d'acteur
+const editActor = () => router.push(`/editactor/${actor.value.id}`);
+
+// Suppression de l'acteur
 const deleteActor = async () => {
-  const token = localStorage.getItem('token');
   if (confirm("Êtes-vous sûr de vouloir supprimer cet acteur ?")) {
     try {
       await axios.delete(`http://localhost:8319/api/actors/${actor.value.id}`, {
-        headers: {
-          accept: 'application/json',
-          Authorization: `Bearer ${token}`,
-
-        },
+        headers: getAuthHeaders(),
       });
-      alert('Acteur supprimé avec succès.');
-      router.push('/actors'); // Rediriger vers la page des acteurs après la suppression
+      alert("Acteur supprimé avec succès.");
+      router.push('/actors');
     } catch (error) {
-      console.error('Erreur lors de la suppression de l\'acteur:', error);
+      console.error("Erreur lors de la suppression de l'acteur:", error);
       alert("Une erreur s'est produite lors de la suppression de l'acteur.");
     }
   }
 };
-</script>
 
+onMounted(loadActorDetails);
+</script>
 
 <style scoped>
 .actor-details {
@@ -127,17 +110,15 @@ const deleteActor = async () => {
 
 .actor-photo {
   width: 200px;
-  height: auto; /* Maintenir les proportions de l'image */
+  height: auto;
   border-radius: 10px;
-  margin-bottom: 20px;
+  margin: 20px auto;
   display: block;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .actor-info {
-  font-size: 1.2em; /* Taille de police pour les informations */
-  line-height: 1.6; /* Espacement entre les lignes */
+  font-size: 1.2em;
+  line-height: 1.6;
 }
 
 .actor-actions {

@@ -30,38 +30,40 @@
 import { ref } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
-import bcrypt from 'bcryptjs'; // Importez bcryptjs
+import bcrypt from 'bcryptjs'; // Importez bcryptjs pour le hachage des mots de passe
 
+// Références réactives
 const email = ref('');
 const password = ref('');
 const error = ref('');
-const success = ref(false); // Nouvelle variable d'état pour le message de succès
+const success = ref(false);
 const router = useRouter();
 
+// Fonction pour gérer l'inscription
 const handleRegister = async () => {
   error.value = ''; // Réinitialiser le message d'erreur
   success.value = false; // Réinitialiser le message de succès
   try {
-    // Hachez le mot de passe avant de l'envoyer
-    const hashedPassword = bcrypt.hashSync(password.value, 10); // 10 est le facteur de coût
+    // Hachage du mot de passe
+    const hashedPassword = bcrypt.hashSync(password.value, 10);
 
+    // Envoi des données à l'API
     const response = await axios.post('http://localhost:8319/api/users', {
       email: email.value,
-      password: hashedPassword, // Utilisez le mot de passe haché
+      password: hashedPassword,
     });
 
-    const token = response.data.token; // Assurez-vous que le token est renvoyé par votre API
-
-    // Stockez le token
+    // Gestion du token
+    const token = response.data.token;
     localStorage.setItem('token', token);
 
-    // Affichez le message de succès
+    // Afficher le message de succès
     success.value = true;
 
-    // Redirige vers la page de connexion après un délai
+    // Redirection vers la page de connexion
     setTimeout(() => {
       router.push('/login');
-    }, 3000); // Redirige après 3 secondes
+    }, 3000);
   } catch (err) {
     error.value = 'Une erreur est survenue lors de l\'inscription. Vérifiez vos informations.';
     console.error(err);
@@ -116,7 +118,7 @@ button {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  margin: 0 auto; /* Centers the button */
+  margin: 0 auto; /* Center the button */
 }
 
 button:hover {
