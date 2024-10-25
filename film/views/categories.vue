@@ -92,7 +92,7 @@ const addCategory = () => {
   </div>
 
   <!-- Liste des catégories paginée -->
-  <category-card
+  <CategoryCard
       v-for="category in paginatedCategories"
       v-if="paginatedCategories.length"
       :key="category.id"

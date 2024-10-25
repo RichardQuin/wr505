@@ -5,13 +5,13 @@ import axios from 'axios';
 
 const router = useRouter();
 
-// Form data for adding/updating a category
+// Formulaire pour l'ajout/mise à jour d'une catégorie
 const categoryForm = ref({
-  title: '', // Other form fields
-  updated_at: new Date().toISOString().slice(0, 16), // Initialize with current date and time in a format compatible with datetime-local input
+  title: '', // Autres champs du formulaire
+  updated_at: new Date().toISOString().slice(0, 16), // Initialise avec la date et l'heure actuelles
 });
 
-// Add new category
+// Ajouter une nouvelle catégorie
 const addCategory = async () => {
   try {
     const token = localStorage.getItem('token');
@@ -22,13 +22,13 @@ const addCategory = async () => {
       },
     });
     alert('Catégorie ajoutée avec succès');
-    router.push('/categories'); // Redirect to categories page after adding
+    router.push('/categories'); // Redirection après l'ajout
   } catch (error) {
     console.error("Erreur lors de l'ajout de la catégorie:", error);
   }
 };
 
-// Update existing category (assumes `id` of the category is passed as a prop or through the route)
+// Mettre à jour une catégorie existante (l'ID de la catégorie doit être fourni)
 const updateCategory = async (id) => {
   try {
     const token = localStorage.getItem('token');
@@ -39,7 +39,7 @@ const updateCategory = async (id) => {
       },
     });
     alert('Catégorie mise à jour avec succès');
-    router.push('/categories'); // Redirect to categories page after updating
+    router.push('/categories'); // Redirection après la mise à jour
   } catch (error) {
     console.error("Erreur lors de la mise à jour de la catégorie:", error);
   }
@@ -50,22 +50,22 @@ const updateCategory = async (id) => {
   <div class="category-form">
     <h2>Ajouter une Catégorie</h2>
 
-    <!-- Category Title Input -->
+    <!-- Champ Titre de la Catégorie -->
     <input
         type="text"
         v-model="categoryForm.title"
         placeholder="Titre de la catégorie"
     />
 
-    <!-- Updated At Input -->
-    <label for="updated_at">Date de Mise à Jour:</label>
+    <!-- Champ Date de Mise à Jour -->
+    <label for="updated_at">Date de Mise à Jour :</label>
     <input
         type="datetime-local"
         v-model="categoryForm.updated_at"
         id="updated_at"
     />
 
-    <!-- Add Category Button -->
+    <!-- Bouton Ajouter Catégorie -->
     <button @click="addCategory">Ajouter la Catégorie</button>
   </div>
 </template>

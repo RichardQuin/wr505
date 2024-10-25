@@ -4,21 +4,20 @@
     <img :src="movieImage" alt="Movie Poster" class="movie-poster" />
 
     <div class="movie-info">
-      <p><strong>Release Date:</strong> {{ formattedReleaseDate }}</p>
-      <p><strong>Duration:</strong> {{ movie.duration }} minutes</p>
-      <p><strong>Director:</strong> {{ movie.director }}</p>
-      <p><strong>Rating:</strong> {{ movie.rating }}</p>
-      <p><strong>Categories:</strong>
-        <span v-for="c in categories" :key="c.id"> {{ c.title }} </span>
+      <p><strong>Date de sortie:</strong> {{ formattedReleaseDate }}</p>
+      <p><strong>Durée:</strong> {{ movie.duration }} minutes</p>
+      <p><strong>Directeur:</strong> {{ movie.director }}</p>
+      <p><strong>Note:</strong> {{ movie.rating }}</p>
+      <p><strong>Catégories:</strong>
+        <span v-for="c in categories" :key="c.id">{{ c.title }}</span>
       </p>
-      <p><strong>Actors:</strong>
-        <span v-for="a in actors" :key="a.id"> {{ a.firstname }} {{ a.lastname }} </span>
+      <p><strong>Acteurs:</strong>
+        <span v-for="a in actors" :key="a.id">{{ a.firstname }} {{ a.lastname }}</span>
       </p>
+    </div>
 
-      <!-- Bouton Modifier -->
+    <div class="button-container">
       <button @click="goToEditMovie" class="edit-button">Modifier</button>
-
-      <!-- Bouton Supprimer -->
       <button @click="confirmDelete" class="delete-button">Supprimer</button>
     </div>
   </div>
@@ -41,9 +40,8 @@ const movieImage = computed(() => movie.value?.posterImage || defaultImage);
 
 // Format de la date de sortie
 const formattedReleaseDate = computed(() => {
-  if (movie.value && movie.value.releaseDate) {
-    const date = new Date(movie.value.releaseDate);
-    return date.toLocaleDateString();
+  if (movie.value?.releaseDate) {
+    return new Date(movie.value.releaseDate).toLocaleDateString();
   }
   return '';
 });
@@ -76,61 +74,49 @@ const confirmDelete = async () => {
 
 // Chargement des catégories
 const loadCategories = async () => {
-  try {
-    const token = localStorage.getItem('token');
-    const promises = movie.value.categories.map(async (category) => {
-      const response = await axios.get(`http://localhost:8319/api/categoris${category.substring(14)}`, {
-        headers: {
-          accept: 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return response.data;
+  const token = localStorage.getItem('token');
+  const promises = movie.value.categories.map(async (category) => {
+    const response = await axios.get(`http://localhost:8319/api/categoris${category.substring(14)}`, {
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     });
-
-    categories.value = await Promise.all(promises);
-  } catch (error) {
-    console.error('Erreur lors du chargement des catégories:', error);
-  }
+    return response.data;
+  });
+  categories.value = await Promise.all(promises);
 };
 
 // Chargement des acteurs
 const loadActors = async () => {
-  try {
-    const token = localStorage.getItem('token');
-    const promises = movie.value.actors.map(async (actor) => {
-      const response = await axios.get(`http://localhost:8319/api/actors/${actor.substring(12)}`, {
-        headers: {
-          accept: 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return response.data;
+  const token = localStorage.getItem('token');
+  const promises = movie.value.actors.map(async (actor) => {
+    const response = await axios.get(`http://localhost:8319/api/actors/${actor.substring(12)}`, {
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     });
-
-    actors.value = await Promise.all(promises);
-  } catch (error) {
-    console.error('Erreur lors du chargement des acteurs:', error);
-  }
+    return response.data;
+  });
+  actors.value = await Promise.all(promises);
 };
 
 // Chargement des détails du film
-onMounted(() => {
+onMounted(async () => {
   const token = localStorage.getItem('token');
-  axios.get(`http://localhost:8319/api/movies/${route.params.id}`, {
-    headers: {
-      accept: 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  })
-      .then((res) => {
-        movie.value = res.data;
-        loadCategories();
-        loadActors();
-      })
-      .catch(error => {
-        console.error('Erreur lors de la récupération des détails du film:', error);
-      });
+  try {
+    const response = await axios.get(`http://localhost:8319/api/movies/${route.params.id}`, {
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    movie.value = response.data;
+    await Promise.all([loadCategories(), loadActors()]); // Chargement parallèle des catégories et acteurs
+  } catch (error) {
+    console.error('Erreur lors de la récupération des détails du film:', error);
+  }
 });
 </script>
 
@@ -159,9 +145,15 @@ onMounted(() => {
   line-height: 1.6;
 }
 
+/* Conteneur pour les boutons */
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+/* Styles des boutons */
 .edit-button, .delete-button {
-  position: absolute;
-  bottom: 20px;
   padding: 10px 20px;
   color: white;
   border: none;
@@ -170,7 +162,6 @@ onMounted(() => {
 }
 
 .edit-button {
-  right: 100px;
   background-color: #007bff;
 }
 
@@ -179,7 +170,6 @@ onMounted(() => {
 }
 
 .delete-button {
-  right: 20px;
   background-color: #dc3545;
 }
 

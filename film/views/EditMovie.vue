@@ -6,7 +6,7 @@
     <div class="movie-info">
       <label>
         <strong>Titre:</strong>
-        <input v-model="movieForm.title" />
+        <input type="text" v-model="movieForm.title" placeholder="Entrez le titre du film" />
       </label>
       <label>
         <strong>Date de sortie:</strong>
@@ -14,20 +14,22 @@
       </label>
       <label>
         <strong>Durée:</strong>
-        <input type="number" v-model="movieForm.duration" /> minutes
+        <input type="number" v-model="movieForm.duration" placeholder="Durée en minutes" /> minutes
       </label>
       <label>
         <strong>Réalisateur:</strong>
-        <input v-model="movieForm.director" />
+        <input type="text" v-model="movieForm.director" placeholder="Entrez le nom du réalisateur" />
       </label>
       <label>
         <strong>Note:</strong>
-        <input type="number" step="0.1" v-model="movieForm.rating" />
+        <input type="number" step="0.1" v-model="movieForm.rating" placeholder="Note sur 10" />
       </label>
 
       <!-- Boutons Enregistrer et Annuler -->
-      <button @click="saveChanges" class="save-button">Enregistrer</button>
-      <button @click="cancelEdit" class="cancel-button">Annuler</button>
+      <div class="button-group">
+        <button @click="saveChanges" class="save-button">Enregistrer</button>
+        <button @click="cancelEdit" class="cancel-button">Annuler</button>
+      </div>
     </div>
   </div>
 </template>
@@ -102,11 +104,11 @@ onMounted(loadMovie);
 <style scoped>
 .movie-details {
   padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 5px;
+  background-color: #ffffff; /* Changer à une couleur blanche pour un meilleur contraste */
+  border-radius: 10px;
   max-width: 800px;
-  margin: 0 auto;
-  position: relative;
+  margin: 20px auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Ajouter une ombre portée pour donner de la profondeur */
 }
 
 .movie-poster {
@@ -116,11 +118,27 @@ onMounted(loadMovie);
   margin-bottom: 20px;
   display: block;
   margin: 0 auto;
+  border: 2px solid #007bff; /* Ajouter une bordure colorée autour de l'image */
 }
 
 .movie-info label {
   display: block;
   margin-bottom: 10px;
+  font-size: 1.1em; /* Augmenter la taille de la police pour les étiquettes */
+  color: #333; /* Couleur de texte plus sombre pour une meilleure lisibilité */
+}
+
+input[type="text"], input[type="date"], input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1em; /* Augmenter la taille de la police pour les champs de saisie */
+}
+
+.button-group {
+  margin-top: 20px; /* Espacement entre les champs et les boutons */
 }
 
 .save-button, .cancel-button {
@@ -128,6 +146,8 @@ onMounted(loadMovie);
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 1em; /* Uniformiser la taille de la police pour les boutons */
+  transition: background-color 0.3s; /* Animation de transition pour le changement de couleur */
 }
 
 .save-button {
@@ -138,14 +158,14 @@ onMounted(loadMovie);
 .cancel-button {
   background-color: #6c757d;
   color: white;
-  margin-left: 10px;
+  margin-left: 10px; /* Espacement entre les boutons */
 }
 
 .save-button:hover {
-  background-color: #0056b3;
+  background-color: #0056b3; /* Couleur au survol */
 }
 
 .cancel-button:hover {
-  background-color: #5a6268;
+  background-color: #5a6268; /* Couleur au survol */
 }
 </style>

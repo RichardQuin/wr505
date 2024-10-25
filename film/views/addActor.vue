@@ -2,31 +2,37 @@
   <div class="add-actor">
     <h1>Ajouter un Acteur</h1>
     <form @submit.prevent="handleAddActor">
+      <!-- Prénom -->
       <div class="form-group">
         <label for="firstname">Prénom</label>
         <input type="text" v-model="firstname" required />
       </div>
 
+      <!-- Nom -->
       <div class="form-group">
         <label for="lastname">Nom</label>
         <input type="text" v-model="lastname" required />
       </div>
 
+      <!-- Date de naissance -->
       <div class="form-group">
         <label for="dob">Date de Naissance</label>
         <input type="date" v-model="dob" required />
       </div>
 
+      <!-- Biographie -->
       <div class="form-group">
         <label for="bio">Biographie</label>
         <textarea v-model="bio" required></textarea>
       </div>
 
+      <!-- Nationalité -->
       <div class="form-group">
         <label for="nationality">Nationalité</label>
         <input type="text" v-model="nationality" required />
       </div>
 
+      <!-- Genre -->
       <div class="form-group">
         <label for="gender">Genre</label>
         <select v-model="gender" required>
@@ -36,11 +42,13 @@
         </select>
       </div>
 
+      <!-- Récompenses -->
       <div class="form-group">
         <label for="awards">Récompenses</label>
-        <input type="number" v-model.number="awards" placeholder="Entrez le nombre de récompenses (optionnel)" />
+        <input type="number" v-model.number="awards" placeholder="Nombre de récompenses (optionnel)" />
       </div>
 
+      <!-- Image de profil -->
       <div class="form-group">
         <label for="profileImage">Image de Profil</label>
         <input type="text" v-model="profileImage" placeholder="URL de l'image" />
@@ -49,6 +57,7 @@
       <button type="submit">Ajouter l'Acteur</button>
     </form>
 
+    <!-- Message d'erreur -->
     <p v-if="error" class="error">{{ error }}</p>
   </div>
 </template>
@@ -69,6 +78,7 @@ const awards = ref(0); // Valeur par défaut pour les récompenses
 const profileImage = ref('');
 const error = ref(''); // Message d'erreur
 
+// Méthode pour ajouter un acteur
 const handleAddActor = async () => {
   error.value = ''; // Réinitialiser le message d'erreur
   try {
@@ -99,6 +109,7 @@ const handleAddActor = async () => {
 </script>
 
 <style scoped>
+/* Conteneur principal pour le formulaire d'ajout */
 .add-actor {
   padding: 20px;
   background-color: #f9f9f9;
@@ -175,4 +186,3 @@ button:active {
   text-align: center;
 }
 </style>
-
